@@ -1,0 +1,22 @@
+services:
+  portfolio:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  portfolio-dev:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    profiles:
+      - dev
