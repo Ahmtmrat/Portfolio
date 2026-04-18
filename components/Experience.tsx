@@ -6,44 +6,35 @@ export default function Experience() {
   const { t } = useLanguage();
 
   return (
-    <section id="experience" className="px-6 py-28 max-w-5xl mx-auto">
-
-      <div className="mb-14">
-        <p className="section-label mb-4">01 — {t.experience.title}</p>
-        <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">{t.experience.subtitle}</h2>
-        <div className="sep mt-6" />
+    <section id="experience" className="px-6 py-28 max-w-6xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-1)] mb-3">{t.experience.title}</h2>
+        <p className="text-[var(--text-3)] text-sm">{t.experience.subtitle}</p>
       </div>
 
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-[#1a1a1a] ml-[3px] hidden sm:block" />
+      <div className="max-w-3xl mx-auto relative">
+        <div className="absolute left-[7px] top-2 bottom-2 w-px bg-[var(--border)]" />
 
-        <div className="space-y-14">
+        <div className="space-y-8">
           {experiences.map((exp, i) => {
             const tExp = t.cv.experiences[i];
             return (
-              <div key={i} className="sm:pl-8 relative">
-                <div className="hidden sm:block absolute left-0 top-[7px] w-1.5 h-1.5 rounded-full bg-[#2a2a2a] border border-[#3a3a3a]" />
-
-                <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-                  <div className="flex items-baseline gap-2 flex-wrap">
-                    <span className="text-base font-semibold text-white">{exp.role}</span>
-                    <span className="text-[#2a2a2a] font-mono">·</span>
-                    <span className="text-[#666] text-sm">{exp.company}</span>
+              <div key={i} className="pl-8 relative">
+                <div className="absolute left-0 top-[10px] w-3.5 h-3.5 rounded-full bg-[#6366f1]/20 border-2 border-[#6366f1]" />
+                <div className="card p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
+                    <h3 className="text-[var(--text-1)] font-semibold text-base">{exp.role}</h3>
+                    <span className="text-xs font-mono text-[var(--text-3)]">{exp.period}</span>
                   </div>
-                  <span className="text-[11px] font-mono text-[#333] bg-[#0f0f0f] border border-[#1a1a1a] px-2.5 py-0.5 rounded-full">
-                    {exp.period}
-                  </span>
-                </div>
-                <p className="text-xs font-mono text-[#2a2a2a] mb-6">{exp.location}</p>
+                  <p className="text-[#6366f1] text-sm font-medium mb-3">{exp.company}</p>
 
-                <div className="space-y-3">
                   {exp.projects.map((proj, j) => {
                     const tProj = tExp?.projects[j];
                     return (
-                      <div key={j} className={proj.name ? "card p-5" : ""}>
+                      <div key={j}>
                         {proj.name && (
-                          <div className="flex flex-wrap items-center gap-2 mb-4">
-                            <span className="text-sm font-medium text-[#ccc]">{proj.name}</span>
+                          <div className="flex flex-wrap items-center gap-2 mb-3 mt-4 first:mt-0">
+                            <span className="text-sm font-medium text-[var(--text-2)]">{proj.name}</span>
                             <div className="flex flex-wrap gap-1.5">
                               {proj.tags.map((tag) => (
                                 <span key={tag} className="tag">{tag}</span>
@@ -51,10 +42,10 @@ export default function Experience() {
                             </div>
                           </div>
                         )}
-                        <ul className="space-y-2.5">
+                        <ul className="space-y-2">
                           {(tProj?.bullets ?? []).map((b, k) => (
-                            <li key={k} className="flex gap-2.5 text-sm text-[#555] leading-relaxed">
-                              <span className="text-[#2a2a2a] mt-[6px] shrink-0 font-mono">—</span>
+                            <li key={k} className="flex gap-2.5 text-sm text-[var(--text-3)] leading-relaxed">
+                              <span className="text-[#6366f1] mt-[3px] shrink-0">→</span>
                               <span>{b}</span>
                             </li>
                           ))}

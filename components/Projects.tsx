@@ -1,63 +1,34 @@
 "use client";
 import { useLanguage } from "@/context/LanguageContext";
 
-const domainColor: Record<string, string> = {
-  "Healthcare":              "text-[#4a7a5a]",
-  "Fintech / Security":      "text-[#7a6a3a]",
-  "AgriTech / Industrial":   "text-[#5a6a3a]",
-  "Logistics / Finance":     "text-[#3a5a7a]",
-  "Sağlık Bilişimi":         "text-[#4a7a5a]",
-  "Fintek / Güvenlik":       "text-[#7a6a3a]",
-  "Tarım Teknolojisi / Endüstriyel": "text-[#5a6a3a]",
-  "Lojistik / Finans":       "text-[#3a5a7a]",
-};
-
 export default function Projects() {
   const { t } = useLanguage();
 
   return (
-    <section id="projects" className="px-6 py-28 max-w-5xl mx-auto">
-
-      <div className="mb-14">
-        <p className="section-label mb-4">02 — {t.projects.title}</p>
-        <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Production Systems</h2>
-        <div className="flex items-center gap-2 mt-4">
-          <span className="text-[11px] font-mono text-[#333] border border-[#1a1a1a] rounded-full px-3 py-0.5 bg-[#0f0f0f]">
-            ⚠ {t.projects.restricted}
-          </span>
-        </div>
-        <div className="sep mt-6" />
+    <section id="projects" className="px-6 py-28 max-w-6xl mx-auto">
+      <div className="text-center mb-16">
+        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-1)] mb-3">{t.projects.title}</h2>
+        <p className="text-[var(--text-3)] text-sm">{t.projects.restricted}</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-3">
+      <div className="max-w-3xl mx-auto space-y-3">
         {t.cv.projects.map((p) => (
-          <div key={p.title} className="card p-5 flex flex-col group">
-            <div className="flex items-start justify-between gap-2 mb-3">
-              <div>
-                <h3 className="text-sm font-semibold text-[#ccc] group-hover:text-white transition-colors">
-                  {p.title}
-                </h3>
-                <span className={`text-[10px] font-mono mt-1 inline-block ${domainColor[p.domain] ?? "text-[#555]"}`}>
-                  {p.domain}
-                </span>
+          <div key={p.title} className="card p-6 group">
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h3 className="text-[var(--text-1)] font-semibold group-hover:text-[#818cf8] transition-colors">
+                {p.title}
+              </h3>
+              <div className="flex gap-2 shrink-0 text-[var(--text-4)] group-hover:text-[var(--text-3)] transition-colors mt-0.5">
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+                </svg>
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
               </div>
-              <span className="flex items-center gap-1.5 text-[10px] font-mono text-[#333] border border-[#1a1a1a] rounded-full px-2.5 py-0.5 shrink-0 whitespace-nowrap bg-[#0c0c0c]">
-                <span className="w-1 h-1 rounded-full bg-[#3d6a3d]" />
-                {t.projects.status_production}
-              </span>
             </div>
-
-            <p className="text-sm text-[#555] mb-4 leading-relaxed flex-1">{p.description}</p>
-
-            <div className="flex flex-wrap gap-1 mb-3">
-              {p.highlights.map((h) => (
-                <span key={h} className="text-[10px] font-mono text-[#444] bg-[#0c0c0c] border border-[#181818] rounded px-2 py-0.5">
-                  {h}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-[#141414]">
+            <p className="text-[var(--text-3)] text-sm leading-relaxed mb-4">{p.description}</p>
+            <div className="flex flex-wrap gap-1.5">
               {p.tech.map((tech) => (
                 <span key={tech} className="tag">{tech}</span>
               ))}

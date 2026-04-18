@@ -3,16 +3,31 @@ export type Lang = "en" | "tr";
 export const translations = {
   en: {
     nav: {
+      about: "About",
       experience: "Experience",
       projects: "Projects",
       code: "Code",
       skills: "Skills",
       contact: "Contact",
+      lets_talk: "Let's Talk",
     },
     hero: {
       badge: "Available for opportunities",
-      cta_contact: "Get in touch",
+      headline_1: "Building scalable systems",
+      headline_2: "& robust products",
+      cta_projects: "View Projects",
+      cta_contact: "Contact Me",
       cta_experience: "View experience",
+    },
+    about: {
+      title: "About Me",
+      description: "Software engineer with a strong focus on backend systems and architectural design. I thrive on solving complex problems and building products that scale efficiently while maintaining code quality and performance.",
+      card1_title: "Backend Development",
+      card1_desc: "Expert in building robust APIs, distributed services, and scalable server architectures using modern .NET frameworks and best practices.",
+      card2_title: "System Integration",
+      card2_desc: "Designing multi-service ecosystems that handle real-time communication, device protocols, and ERP connectors with fault tolerance.",
+      card3_title: "Full-Stack Delivery",
+      card3_desc: "End-to-end ownership from REST API design to React frontend — shipping production systems across healthcare, fintech, and industrial domains.",
     },
     experience: {
       title: "Experience",
@@ -32,11 +47,13 @@ export const translations = {
     },
     contact: {
       title: "Contact",
-      subtitle: "Open to new opportunities, collaborations, and interesting conversations.",
+      lets_work: "Let's Work Together",
+      subtitle: "I'm always interested in hearing about new projects and opportunities. Whether you have a question or just want to say hi, feel free to reach out.",
       email: "Email",
+      email_me: "Email Me",
       linkedin: "LinkedIn",
       github: "GitHub",
-      built: "Built with Next.js · Deployed on Vercel",
+      built: "Built with Next.js & Tailwind CSS",
     },
     snippets: {
       perf_middleware: {
@@ -195,16 +212,31 @@ export const translations = {
 
   tr: {
     nav: {
+      about: "Hakkımda",
       experience: "Deneyim",
       projects: "Projeler",
       code: "Kod",
       skills: "Beceriler",
       contact: "İletişim",
+      lets_talk: "İletişime Geç",
     },
     hero: {
       badge: "Yeni fırsatlara açık",
-      cta_contact: "İletişime geç",
+      headline_1: "Ölçeklenebilir sistemler",
+      headline_2: "& güçlü ürünler kuruyorum",
+      cta_projects: "Projeleri Gör",
+      cta_contact: "İletişime Geç",
       cta_experience: "Deneyimi gör",
+    },
+    about: {
+      title: "Hakkımda",
+      description: "Backend sistemleri ve mimari tasarım odaklı yazılım mühendisi. Karmaşık sorunları çözmek ve kod kalitesini korurken verimli ölçeklenen ürünler geliştirmek benim için tutkudan öte.",
+      card1_title: "Backend Geliştirme",
+      card1_desc: "Modern .NET framework'leri ve en iyi pratiklerle güçlü API'ler, dağıtık servisler ve ölçeklenebilir sunucu mimarileri geliştirme uzmanlığı.",
+      card2_title: "Sistem Entegrasyonu",
+      card2_desc: "Gerçek zamanlı iletişim, cihaz protokolleri ve ERP bağlantılarını hata toleransıyla yöneten çok servisli ekosistemler tasarlama.",
+      card3_title: "Tam Yığın Teslimat",
+      card3_desc: "REST API tasarımından React frontend'e uçtan uca sahiplik — sağlık bilişimi, fintek ve endüstriyel alanlarda üretim sistemleri kurma.",
     },
     experience: {
       title: "Deneyim",
@@ -224,11 +256,13 @@ export const translations = {
     },
     contact: {
       title: "İletişim",
-      subtitle: "Yeni fırsatlara, iş birliklerine ve ilgi çekici sohbetlere açığım.",
+      lets_work: "Birlikte Çalışalım",
+      subtitle: "Yeni projeler ve fırsatlar hakkında konuşmaya her zaman açığım. Bir sorunuz varsa ya da sadece merhaba demek istiyorsanız, çekinmeden yazın.",
       email: "E-posta",
+      email_me: "E-posta Gönder",
       linkedin: "LinkedIn",
       github: "GitHub",
-      built: "Next.js ile geliştirildi · Vercel üzerinde yayında",
+      built: "Next.js & Tailwind CSS ile geliştirildi",
     },
     snippets: {
       perf_middleware: {
