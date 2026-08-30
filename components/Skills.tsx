@@ -1,30 +1,45 @@
 "use client";
+
 import { skills } from "@/data/cv";
 import { useLanguage } from "@/context/LanguageContext";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Chip } from "@/components/ui/Chip";
 
 export default function Skills() {
   const { t } = useLanguage();
 
   return (
-    <section id="skills" className="px-6 py-28 max-w-6xl mx-auto">
-      <div className="text-center mb-16">
-        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-1)] mb-3">{t.skills.title}</h2>
-        <p className="text-[var(--text-3)] text-sm">Technologies and tools I work with</p>
-      </div>
-
-      <div className="flex flex-wrap justify-center gap-x-12 gap-y-10">
-        {skills.map((group) => (
-          <div key={group.category} className="min-w-[140px]">
-            <h3 className="text-[10px] font-mono text-[var(--text-3)] uppercase tracking-[0.15em] mb-3">
-              {t.cv.skillCategories[group.category as keyof typeof t.cv.skillCategories] ?? group.category}
-            </h3>
-            <div className="flex flex-wrap gap-1.5">
-              {group.items.map((item) => (
-                <span key={item} className="tag">{item}</span>
-              ))}
-            </div>
-          </div>
-        ))}
+    <section id="skills" className="section-tight surface-alt">
+      <div className="shell-wide">
+        <SectionHeading
+          level={3}
+          eyebrow={t.skills.eyebrow}
+          title={t.skills.title}
+          subtitle={t.skills.subtitle}
+        />
+        <div className="grid gap-[var(--sp-5)] sm:grid-cols-2 lg:grid-cols-3">
+          {skills.map((group, i) => {
+            // Six groups over three tint families, so each row reads as a set.
+            const tint = ((i % 3) + 1) as 1 | 2 | 3;
+            return (
+              <div
+                key={group.id}
+                className={`card glass-${tint} p-[var(--card-pad)]`}
+              >
+                <div className={`eyebrow tint-${tint}-fg`}>
+                  {t.cv.skillCategories[group.id]}
+                </div>
+                <div className="mt-[var(--sp-4)] flex flex-wrap gap-[var(--sp-2)]">
+                  {group.items.map((item) => (
+                    <Chip key={item} tone="dark" size="small">
+                      {item}
+                    </Chip>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

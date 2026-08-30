@@ -1,7 +1,15 @@
+import type { Translations } from "./translations";
+
+/**
+ * `id` is the translation key, so a snippet without a title/description in
+ * `data/translations.ts` fails to compile — no hand-maintained id map.
+ */
+export type SnippetId = keyof Translations["snippets"];
+
 export type Snippet = {
-  id: string;
-  title: string;
-  description: string;
+  id: SnippetId;
+  /** Shown in the code panel title bar. */
+  file: string;
   project: string;
   projectTag: string;
   lang: string;
@@ -10,10 +18,8 @@ export type Snippet = {
 
 export const snippets: Snippet[] = [
   {
-    id: "perf-middleware",
-    title: "Performance Timing Middleware",
-    description:
-      "Every request is wrapped with a Stopwatch. The elapsed time is pushed into Serilog's LogContext with IsPerf=true, routing it to a dedicated performance sink — completely separate from the application log.",
+    id: "perf_middleware",
+    file: "PerfTimingMiddleware.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · Serilog",
     lang: "csharp",
@@ -54,10 +60,8 @@ export const snippets: Snippet[] = [
 }`,
   },
   {
-    id: "exception-handler",
-    title: "Global Exception Handler",
-    description:
-      "A single extension method centralises all exception-to-HTTP-status mapping. C# switch expressions keep the mapping declarative and exhaustive — no scattered try/catch blocks in controllers.",
+    id: "exception_handler",
+    file: "UseCustomExceptionHandler.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · ASP.NET Core",
     lang: "csharp",
@@ -92,10 +96,8 @@ export const snippets: Snippet[] = [
 }`,
   },
   {
-    id: "autofac-module",
-    title: "Autofac IoC — Assembly Scan",
-    description:
-      "Generic registrations for Repository, Service, UoW, and adapters are handled in one Autofac module. Convention-based assembly scanning eliminates per-class registration — any new class ending in Repository, Service, Generator, or Resolver is wired automatically.",
+    id: "autofac_module",
+    file: "RepoServiceModule.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · Autofac",
     lang: "csharp",
@@ -137,10 +139,8 @@ export const snippets: Snippet[] = [
 }`,
   },
   {
-    id: "jwt-token",
-    title: "JWT — Access + Refresh Token",
-    description:
-      "Access tokens are signed with HMAC-SHA256 and carry NameIdentifier, Name, Role, and per-audience claims. Refresh tokens are generated with RandomNumberGenerator.GetBytes — no Math.Random, no Guid.",
+    id: "jwt_token",
+    file: "TokenHelper.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · JWT Bearer",
     lang: "csharp",
@@ -178,10 +178,8 @@ public async Task<TokenDto> CreateToken(User user)
 }`,
   },
   {
-    id: "can-bus",
-    title: "CAN Bus Frame — Send / Receive",
-    description:
-      "A SocketCAN wrapper for Linux that packs a 16-byte can_frame directly onto the stack with stackalloc — no heap allocation per message. Extended (J1939, 29-bit) and standard (11-bit) IDs are resolved via bit-mask at call time.",
+    id: "can_bus",
+    file: "CanBusChannel.cs",
     project: "Industrial IoT Desktop Application",
     projectTag: ".NET · Avalonia · SocketCAN",
     lang: "csharp",
@@ -240,10 +238,8 @@ public (uint id, byte[] data, bool extended) Receive()
 }`,
   },
   {
-    id: "cqrs-handler",
-    title: "CQRS — MediatR Query Handler",
-    description:
-      "A vertical-slice query handler using MediatR. AutoMapper ProjectTo pushes the projection down to SQL — no over-fetching. The handler owns its own query shape and never leaks domain entities to callers.",
+    id: "cqrs_handler",
+    file: "GetTestResultsQuery.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · MediatR · EF Core",
     lang: "csharp",
@@ -308,10 +304,8 @@ public sealed class GetTestResultsHandler
 }`,
   },
   {
-    id: "signalr-hub",
-    title: "SignalR Hub — Role-Based Groups",
-    description:
-      "Typed SignalR hub that tracks online users in a ConcurrentDictionary and routes each connection into a role group on connect. Disconnects clean up state automatically — no stale connection IDs.",
+    id: "signalr_hub",
+    file: "LisHub.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · SignalR · JWT",
     lang: "csharp",
@@ -377,10 +371,8 @@ public sealed class LisNotificationService
 }`,
   },
   {
-    id: "erp-worker",
-    title: "Worker Service — Periodic ERP Sync",
-    description:
-      "BackgroundService using PeriodicTimer (no Thread.Sleep, no timer drift). Each tick opens a fresh DI scope so EF Core DbContext is never shared across cycles. Errors are logged and swallowed — the worker keeps running.",
+    id: "erp_worker",
+    file: "ErpSyncWorker.cs",
     project: "ERP Integration Service",
     projectTag: ".NET · Worker Service · Serilog",
     lang: "csharp",
@@ -429,10 +421,8 @@ public sealed class LisNotificationService
 }`,
   },
   {
-    id: "quartz-job",
-    title: "Quartz.NET — Scheduled Visitor Sync",
-    description:
-      "DisallowConcurrentExecution prevents overlapping runs if a sync cycle exceeds its schedule. Each visitor is verified against SmartID independently — one failure does not abort the batch. Counts are flushed in a single SaveChanges at the end.",
+    id: "quartz_job",
+    file: "VisitorSyncJob.cs",
     project: "Access Management Platform",
     projectTag: ".NET · Quartz.NET · SmartID",
     lang: "csharp",
@@ -487,10 +477,8 @@ public sealed class VisitorSyncJob : IJob
 }`,
   },
   {
-    id: "permission-auth",
-    title: "Endpoint Authorization — Permission Claims",
-    description:
-      "Claim-based permission system built on ASP.NET Core's authorization pipeline. A custom attribute maps to a named policy; the handler checks the user's permission claims — roles alone are too coarse for a multi-tenant medical system.",
+    id: "permission_auth",
+    file: "PermissionAuthorization.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · ASP.NET Core · JWT",
     lang: "csharp",
@@ -549,10 +537,8 @@ public async Task<IActionResult> Approve(int id, CancellationToken ct)
 }`,
   },
   {
-    id: "request-response-log",
-    title: "Request / Response Logging Middleware",
-    description:
-      "Captures method, path, status code and elapsed time for every HTTP transaction. Response body is buffered through a MemoryStream so it can be read without consuming it — the original stream is restored before the response is sent. Sensitive headers are masked.",
+    id: "request_response_log",
+    file: "RequestLoggingMiddleware.cs",
     project: "Laboratory Information System",
     projectTag: ".NET · ASP.NET Core · Serilog",
     lang: "csharp",

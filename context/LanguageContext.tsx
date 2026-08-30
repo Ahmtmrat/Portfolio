@@ -1,6 +1,14 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
-import { translations, type Lang, type Translations } from "@/data/translations";
+
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  translations,
+  LANG_COOKIE,
+  type Lang,
+  type Translations,
+} from "@/data/translations";
+
+const ONE_YEAR = 60 * 60 * 24 * 365;
 
 type LanguageContextType = {
   lang: Lang;
@@ -14,25 +22,35 @@ const LanguageContext = createContext<LanguageContextType>({
   toggle: () => {},
 });
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>("en");
+/**
+ * The active language arrives from the server (read from the `lang` cookie in
+ * the root layout), so the first paint is already in the right language and
+ * `<html lang>` is correct — no flash of English, no hydration mismatch.
+ */
+export function LanguageProvider({
+  initialLang,
+  children,
+}: {
+  initialLang: Lang;
+  children: React.ReactNode;
+}) {
+  const [lang, setLang] = useState<Lang>(initialLang);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("lang") as Lang | null;
-    if (saved === "tr" || saved === "en") setLang(saved);
+  const toggle = useCallback(() => {
+    setLang((current) => {
+      const next: Lang = current === "en" ? "tr" : "en";
+      document.cookie = `${LANG_COOKIE}=${next};path=/;max-age=${ONE_YEAR};samesite=lax`;
+      document.documentElement.lang = next;
+      return next;
+    });
   }, []);
 
-  const toggle = () => {
-    const next: Lang = lang === "en" ? "tr" : "en";
-    setLang(next);
-    localStorage.setItem("lang", next);
-  };
-
-  return (
-    <LanguageContext.Provider value={{ lang, t: translations[lang], toggle }}>
-      {children}
-    </LanguageContext.Provider>
+  const value = useMemo(
+    () => ({ lang, t: translations[lang], toggle }),
+    [lang, toggle]
   );
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export const useLanguage = () => useContext(LanguageContext);

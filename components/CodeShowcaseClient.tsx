@@ -1,92 +1,185 @@
 "use client";
-import { useState } from "react";
-import { useLanguage } from "@/context/LanguageContext";
 
-type SnippetMeta = {
-  id: string;
+import { useRef, useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
+import type { SnippetId } from "@/data/snippets";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+
+type HighlightedSnippet = {
+  id: SnippetId;
+  file: string;
   project: string;
   projectTag: string;
-  highlightedHtml: string;
+  code: string;
+  html: string;
 };
 
-const snippetKey: Record<string, keyof ReturnType<typeof useLanguage>["t"]["snippets"]> = {
-  "perf-middleware":      "perf_middleware",
-  "exception-handler":   "exception_handler",
-  "autofac-module":      "autofac_module",
-  "jwt-token":           "jwt_token",
-  "can-bus":             "can_bus",
-  "cqrs-handler":        "cqrs_handler",
-  "signalr-hub":         "signalr_hub",
-  "erp-worker":          "erp_worker",
-  "quartz-job":          "quartz_job",
-  "permission-auth":     "permission_auth",
-  "request-response-log":"request_response_log",
-};
-
-export default function CodeShowcaseClient({ snippets }: { snippets: SnippetMeta[] }) {
+export default function CodeShowcaseClient({
+  snippets,
+}: {
+  snippets: HighlightedSnippet[];
+}) {
   const { t } = useLanguage();
-  const [expanded, setExpanded] = useState<string | null>(snippets[0]?.id ?? null);
+  const [openId, setOpenId] = useState<SnippetId>(snippets[0].id);
+  const [copied, setCopied] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  const selected = snippets.find((s) => s.id === openId) ?? snippets[0];
+  const copy = t.snippets[selected.id];
+
+  const select = (id: SnippetId) => {
+    setOpenId(id);
+    setCopied(false);
+  };
+
+  /** Roving tabindex: the tablist is one tab stop, arrows move within it. */
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const keys = ["ArrowDown", "ArrowUp", "Home", "End"];
+    if (!keys.includes(e.key)) return;
+    e.preventDefault();
+
+    const index = snippets.findIndex((s) => s.id === openId);
+    const last = snippets.length - 1;
+    const next =
+      e.key === "Home"
+        ? 0
+        : e.key === "End"
+          ? last
+          : e.key === "ArrowDown"
+            ? (index + 1) % snippets.length
+            : (index - 1 + snippets.length) % snippets.length;
+
+    select(snippets[next].id);
+    tabsRef.current
+      ?.querySelector<HTMLButtonElement>(`#tab-${snippets[next].id}`)
+      ?.focus();
+  };
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(selected.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch {
+      // Clipboard is unavailable (insecure origin, denied permission) —
+      // the code is on screen and selectable either way.
+    }
+  };
 
   return (
-    <section id="code" className="px-6 py-28 max-w-6xl mx-auto">
+    <section id="code" className="section surface-alt">
+      <div className="shell-wide">
+        <SectionHeading
+          eyebrow={t.code.eyebrow}
+          title={t.code.title}
+          subtitle={t.code.subtitle}
+        />
 
-      <div className="text-center mb-16">
-        <h2 className="text-3xl sm:text-4xl font-bold text-[var(--text-1)] mb-3">{t.code.title}</h2>
-        <p className="text-[var(--text-3)] text-sm">{t.code.subtitle}</p>
-      </div>
-
-      <div className="max-w-3xl mx-auto space-y-2">
-        {snippets.map((s) => {
-          const key = snippetKey[s.id];
-          const snippet = t.snippets[key];
-          const isOpen = expanded === s.id;
-
-          return (
-            <div key={s.id} className="overflow-hidden rounded-xl border border-[var(--border)] hover:border-[var(--border-2)] transition-colors">
-
-              {/* Accordion header — theme-aware */}
-              <button
-                className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--bg-1)] hover:bg-[var(--bg-2)] text-left transition-colors cursor-pointer"
-                onClick={() => setExpanded(isOpen ? null : s.id)}
-              >
-                <div className="flex gap-1.5 shrink-0">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                </div>
-
-                <span className="flex-1 text-sm font-medium text-[var(--text-1)]">
-                  {snippet.title}
-                </span>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="hidden sm:inline text-[10px] font-mono text-[var(--text-3)]">{s.project}</span>
-                  <span className="tag">{s.projectTag}</span>
-                  <span className={`text-[10px] text-[var(--text-3)] transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`}>▾</span>
-                </div>
-              </button>
-
-              {isOpen && (
-                <>
-                  {/* Description — theme-aware */}
-                  <div className="px-5 py-3 bg-[var(--bg-2)] border-t border-[var(--border)] border-b border-[#1e1e2e]">
-                    <p className="text-xs font-mono text-[var(--text-3)] leading-relaxed max-w-2xl">
-                      <span className="text-[var(--text-4)]">// </span>
-                      {snippet.description}
-                    </p>
-                  </div>
-
-                  {/* Code block — always dark */}
+        <div className="grid items-start gap-[var(--sp-10)] lg:grid-cols-[380px_1fr]">
+          <div
+            ref={tabsRef}
+            role="tablist"
+            aria-label={t.code.list_label}
+            aria-orientation="vertical"
+            onKeyDown={onKeyDown}
+          >
+            {snippets.map((s) => {
+              const meta = `${s.project} · ${s.projectTag}`;
+              const isOpen = s.id === openId;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  role="tab"
+                  id={`tab-${s.id}`}
+                  aria-selected={isOpen}
+                  aria-controls={`panel-${s.id}`}
+                  tabIndex={isOpen ? 0 : -1}
+                  className="sample-row mb-[var(--sp-2)]"
+                  onClick={() => select(s.id)}
+                >
                   <div
-                    className="text-xs leading-relaxed overflow-x-auto px-2 py-2"
-                    style={{ background: "#111118" }}
-                    dangerouslySetInnerHTML={{ __html: s.highlightedHtml }}
-                  />
-                </>
-              )}
+                    style={{
+                      font: `var(--fw-${isOpen ? "semibold" : "medium"}) var(--fs-body-sm)/1.35 var(--font-sans)`,
+                      color: "var(--ink-900)",
+                    }}
+                  >
+                    {t.snippets[s.id].title}
+                  </div>
+                  <div
+                    className="t-micro mt-[2px]"
+                    style={{ color: "var(--ink-500)" }}
+                  >
+                    {meta}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            role="tabpanel"
+            id={`panel-${selected.id}`}
+            aria-labelledby={`tab-${selected.id}`}
+            className="lg:sticky"
+            style={{ top: "var(--sp-8)" }}
+          >
+            <p
+              className="t-body"
+              style={{
+                margin: "0 0 var(--sp-5)",
+                color: "var(--text-secondary)",
+                maxWidth: "64ch",
+              }}
+            >
+              {copy.description}
+            </p>
+
+            <div className="code-panel">
+              <div className="code-panel-bar">
+                <span
+                  style={{
+                    font: "var(--fw-medium) var(--fs-caption)/1 var(--font-mono)",
+                    color: "rgba(255,255,255,.8)",
+                  }}
+                >
+                  {selected.file}
+                </span>
+                <span className="flex items-center gap-[var(--sp-4)]">
+                  <span
+                    className="t-micro hidden sm:inline"
+                    style={{ color: "var(--text-inverse-dim)" }}
+                  >
+                    {selected.projectTag}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onCopy}
+                    aria-label={t.code.copy_label}
+                    style={{
+                      background: "rgba(255,255,255,.08)",
+                      border: "1px solid var(--border-dark-hairline)",
+                      color: "rgba(255,255,255,.85)",
+                      borderRadius: "var(--r-pill)",
+                      padding: "4px 12px",
+                      font: "var(--fw-medium) var(--fs-micro)/1 var(--font-sans)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {copied ? t.code.copied : t.code.copy}
+                  </button>
+                </span>
+              </div>
+
+              <div
+                className="code-scroll"
+                style={{ maxHeight: 430 }}
+                // Shiki output, generated at build time from local source files.
+                dangerouslySetInnerHTML={{ __html: selected.html }}
+              />
             </div>
-          );
-        })}
+          </div>
+        </div>
       </div>
     </section>
   );
